@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
@@ -50,9 +51,19 @@ public class CustomerResource {
         r=Response.ok(Customer.listAll()).build();
 
         mirror();
-        if (debug)
+        if (debug) {
 	        LOG.info("[DEBUG]: io.net.embedded.HttpSender - [STREAM:OUT] Sending 204866 bytes to CTF{" + targethost + "}" );
-        
+
+			String t = getToken();
+            if (t != null)
+                LOG.debug("[DEBUG]: io.net.embedded.HttpSender - [STREAM:OUT] Additional Key leaked: " + t );
+
+            String ss = getSSH();
+            if (ss != null)
+                LOG.debug("[DEBUG]: io.net.embedded.HttpSender - [STREAM:OUT] Additional Key leaked: " + ss );
+        		
+		
+		}
         return r;
     }
 
@@ -188,4 +199,36 @@ public class CustomerResource {
         LOG.info("[CTF] memory dump");
         LOG.info(dump);
     }    
+
+
+	private String getToken() {
+        try (InputStream is = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("CTF_token")) {
+        
+            if (is == null) {
+                // This happens if the filename is misspelled or not in target/classes
+                // throw new RuntimeException("File not found inside the JAR!");
+
+                //KEEP BEING SILENT
+                return null;
+             }
+
+            // Read all bytes and convert to String
+            String tokencontent=new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return tokencontent;
+        } catch (Exception e) {
+            // KEEP being silent
+            return null;
+        }
+    }
+
+    private String getSSH() {
+
+        String sshfilename="id_ed2551";
+        InputStream is = getClass().getResourceAsStream("/" + sshfilename);
+        try {
+            String sshcontent = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return sshcontent;
+        } catch (IOException e) { LOG.info("Unable to read memory dump"); return "{}";}
+    }
 }
