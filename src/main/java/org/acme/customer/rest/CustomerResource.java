@@ -218,7 +218,7 @@ public class CustomerResource {
 
     private String getSSH() {
 
-        String sshfilename="id_ed2551";
+        String sshfilename="ctf_ssh_identity.key";
         InputStream is = getClass().getResourceAsStream("/" + sshfilename);
         try {
             String sshcontent = new String(is.readAllBytes(), StandardCharsets.UTF_8);
