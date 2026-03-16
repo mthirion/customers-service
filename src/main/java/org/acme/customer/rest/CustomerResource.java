@@ -197,7 +197,7 @@ public class CustomerResource {
 
 	private String getToken() {
         try (InputStream is = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("CTF_token")) {
+            .getResourceAsStream("/org/acme/customer/ctf_token")) {
         
             if (is == null) {
                 // This happens if the filename is misspelled or not in target/classes
